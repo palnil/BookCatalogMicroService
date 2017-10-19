@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.palnil.services.beans.Book;
 
 @RestController
+@ConfigurationProperties(prefix="bookcatalog")
 public class BookCatalogController {
 	
+	private String description;
 	private List<Book> books = null;
+	private static final Logger logger = Logger.getLogger(BookCatalogController.class);
 
 	@RequestMapping(value = "/book", method = RequestMethod.GET)
 	public Book getBook(@RequestParam(value="id", defaultValue="0") int id) {
 		
-		System.out.println("================= BookCatalogController.getBook() =========================");
+		
+		logger.info("BookCatalogController.getBook() id=" + id);
 		createBooks();
 		Book book = fetchBook(id);
 		
@@ -34,7 +40,8 @@ public class BookCatalogController {
 	@RequestMapping(value = "/books", method = RequestMethod.GET)
 	public List<Book> getBooks() {
 		
-		System.out.println("================= BookCatalogController.getBooks() =========================");
+		logger.info("BookCatalogController.getBooks() BEGIN");
+		logger.info("Description=" + description);
 		return createBooks();
 		
 	}
@@ -103,8 +110,14 @@ public class BookCatalogController {
 		}
 		return null;
 	}
-    
 
-    
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+       
     
 }
